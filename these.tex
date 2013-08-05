@@ -1,0 +1,44 @@
+\documentclass[a4paper,11pt,twoside]{memoir}
+
+\usepackage{urthese}
+
+\settitle{Intitul\'e de la th\`ese %
+Ex.: Contribution \`a la conception \`a bas co\^ut d'antennes 3D\dots}
+\setauthor{Name~Lastname}
+\setmention{Traitement du Signal}
+\setlaboshort{INSERM, U1099}
+\setlabolong{Laboratoire de Traitement du Signal et de l'Image}
+\setcomposante{UFR ISTIC: Informatique et \'Electronique}
+\setsoutenancedate{Un jour}
+\setsoutenancelieu{Rennes}
+
+\input{preamble}
+
+
+\addbibresource{biblio.bib}
+
+\OnehalfSpacing
+
+\begin{document}
+\selectlanguage{french}
+\frontmatter
+\thetitlepage
+\selectlanguage{english}
+\tableofcontents
+%\include{cover/cover}
+
+\selectlanguage{english}
+\mainmatter
+\pagestyle{urthese}
+\include{chapter1/chapter1}
+\include{chapter2/chapter2}
+\include{chapter3/chapter3}
+\include{chapter4/chapter4}
+\include{chapter5/chapter5}
+\include{chapter6/chapter6}
+\include{chapter7/chapter7}
+\include{chapter8/chapter8}
+\include{chapter9/chapter9}
+
+
+\end{document}

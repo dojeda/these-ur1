@@ -1,0 +1,314 @@
+%%%% file urthese.sty
+\NeedsTeXFormat{LaTeX2e}
+\ProvidesPackage{urthese}[2013/05/13 v0.0 Universite de Rennes 1 thesis]
+
+%% Only works with the memoir class!!!!!!!!!!!!!!!
+\@ifclassloaded{memoir}{\let\endurthese\relax}{\let\endurthese\endinput
+\PackageError{urthese}{The ur1these package only works with the memoir class}%
+{\@ehd}}
+\endurthese
+
+%% Packages
+%\usepackage[french]{babel}              % Language: french
+%\usepackage[utf8]{inputenc}             % input in utf-8
+%\usepackage[babel]{csquotes}            % for correct quotation marks
+
+%\usepackage{setspace}                   % Line spacing
+
+\RequirePackage[bibstyle=authoryear,
+                citestyle=authoryear-comp,
+                maxcitenames=1,
+                hyperref=true,
+                natbib=true,
+                refsection=chapter]{biblatex}
+\RequirePackage{hyperref}
+\RequirePackage{graphicx}
+\RequirePackage{textpos}
+
+\defbibheading{subbibintoc}[\refname]{%
+  \addsec{#1}%
+%   \markboth{#1}{#1}}% DELETED
+  }% NEW
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%% Packages that should be erased in the final version
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\usepackage{lipsum}
+
+% Margin configuration (left and right)
+\setlrmarginsandblock{2.5cm}{2.5cm}{*}
+%\checkandfixthelayout
+
+% top/bottom margins
+  %% for main body, bottom of text at 1in, footer below
+  %% top of header at 1in, first text line double spaced
+  %% below base of header
+\newlength{\linespace}
+\setlength{\linespace}{\baselineskip} % current equivalent of \onelineskip
+\setlength{\headheight}{\onelineskip}
+\setlength{\headsep}{\linespace}
+\addtolength{\headsep}{-\topskip}
+\setlength{\uppermargin}{2.5cm}
+\addtolength{\uppermargin}{\headheight}
+\addtolength{\uppermargin}{\headsep}
+%% and for the bottom
+\setlength{\lowermargin}{2cm}
+\setlength{\textheight}{\paperheight}
+\addtolength{\textheight}{-\uppermargin}
+\addtolength{\textheight}{-\lowermargin}
+%% footnote settings
+\setlength{\footskip}{\onelineskip}
+\setlength{\footnotesep}{\onelineskip}
+
+\checkandfixthelayout[nearest]
+
+%%%% pagestyles
+%% the main text
+\makepagestyle{urthese}
+\makeevenhead{urthese}{\thepage}{}{}
+\makeoddhead{urthese}{}{}{\thepage}
+%% for continuation pages of the ToC, LoF, LoT
+\makepagestyle{toc}
+\makeevenfoot{toc}{}{\thepage}{}
+\makeoddfoot{toc}{}{\thepage}{}
+\makeevenhead{toc}{Chapter}{}{Page}
+\makeoddhead{toc}{Chapter}{}{Page}
+\makepagestyle{lof}
+\makeevenfoot{lof}{}{\thepage}{}
+\makeoddfoot{lof}{}{\thepage}{}
+\makeevenhead{lof}{Figure}{}{Page}
+\makeoddhead{lof}{Figure}{}{Page}
+\makepagestyle{lot}
+\makeevenfoot{lot}{}{\thepage}{}
+\makeoddfoot{lot}{}{\thepage}{}
+\makeevenhead{lot}{Table}{}{Page}
+\makeoddhead{lot}{Table}{}{Page}
+
+%% the fiddle lengths (..ta.. for title/approval page, others for prelims)
+% \newlength{\toptafiddle} \setlength{\toptafiddle}{2\linespace}
+% \newlength{\bottafiddle} \setlength{\bottafiddle}{0pt}
+% \newlength{\topfiddle} \setlength{\topfiddle}{\toptafiddle}
+% \newlength{\botfiddle} \setlength{\botfiddle}{\onelineskip}
+
+% %% LoF
+% \renewcommand{\listfigurename}{LIST OF FIGURES}
+% \addtodef{\listoffigures}{\clearpage\pagestyle{lof}}{}
+
+% \renewcommand*{\lofheadstart}{\vspace*{-\topfiddle}}
+% \renewcommand*{\afterloftitle}{\thispagestyle{plain}%
+% \par\nobreak {\normalfont Figure \hfill Page}\par\nobreak}
+
+% %%% The LoT
+% \renewcommand{\listtablename}{LIST OF TABLES}
+% \addtodef{\listoftables}{\clearpage\pagestyle{lot}}{}
+% \renewcommand*{\lotheadstart}{\vspace*{-\topfiddle}}
+% \renewcommand*{\afterlottitle}{\thispagestyle{plain}%
+% \par\nobreak {\normalfont Table \hfill Page}\par\nobreak}
+
+% %%%% Do the ToC
+% \renewcommand{\contentsname}{TABLE OF CONTENTS}
+% \addtodef{\tableofcontents}{\clearpage\pagestyle{toc}}{}
+% \renewcommand*{\tocheadstart}{\vspace*{-\topfiddle}}
+% \renewcommand*{\aftertoctitle}{\thispagestyle{plain}%
+% \par\nobreak \mbox{}\hfill{\normalfont Page}\par\nobreak}
+
+%% chapter style
+% \makechapterstyle{urthese}{%
+% \setlength{\beforechapskip}{-\topfiddle}
+% \setlength{\midchapskip}{1.0\onelineskip}
+% \setlength{\afterchapskip}{1.0\onelineskip}
+% \renewcommand*{\chapnamefont}{\normalfont}
+% \renewcommand*{\chapnumfont}{\chapnamefont}
+% \renewcommand*{\printchapternum}{\centering\chapnumfont \thechapter}
+% \renewcommand*{\chaptitlefont}{\normalfont\centering}
+% \renewcommand*{\printchapternonum}{}}
+% \aliaspagestyle{chapter}{empty}
+
+%%%% for the title page and approval page.
+% your title
+\newcommand{\settitle}[1]{\def\urttitle{#1}}
+% you
+\newcommand{\setauthor}[1]{\def\urtauthor{#1}}
+% Mention
+\newcommand{\setmention}[1]{\def\urtmention{#1}}
+% Labo
+\newcommand{\setlaboshort}[1]{\def\urtlaboshort{#1}}
+\newcommand{\setlabolong}[1]{\def\urtlabolong{#1}}
+\newcommand{\setcomposante}[1]{\def\urtcomposante{#1}}
+% Date
+\newcommand{\setsoutenancedate}[1]{\def\urtsdate{#1}}
+% Lieu
+\newcommand{\setsoutenancelieu}[1]{\def\urtslieu{#1}}
+% Jury
+\newcommand{\PRESp}{P.}
+\newcommand{\PRESn}{\textsc{Dugland}}
+\newcommand{\PRESq}{gargamel}
+\newcommand{\ADVp}{S.}
+\newcommand{\ADVn}{\textsc{Dublair}}
+\newcommand{\ADVq}{grand schtroumpf}
+\newcommand{\RAPpi}{X.}
+\newcommand{\RAPni}{\textsc{Dupont}}
+\newcommand{\RAPqi}{schtroumpf farceur}
+\newcommand{\RAPti}{rapporteur}
+\newcommand{\EXApi}{X.}
+\newcommand{\EXAni}{\textsc{Durant}}
+\newcommand{\EXAqi}{schtroumpf faineant}
+\newcommand{\EXAti}{\'Examinateur}
+\newcommand{\Mpres}{M}
+\newcommand{\TPres}{Président}
+\newcommand{\Mrap}{M}
+\newcommand{\TRap}{Rapporteur}
+\newcommand{\Mexa}{MM}
+\newcommand{\TExa}{Examinateurs}
+\newcommand{\TailleJury}{\large{}}
+\newcommand{\authorspacing}{ / }
+\newcommand{\pnqRAP}[1]{%
+\csname RAPp#1\endcsname\ \csname RAPn#1\endcsname, \csname RAPq#1\endcsname}
+\newcommand{\pnqEXA}[1]{%
+\csname EXAp#1\endcsname\ \csname EXAn#1\endcsname, \csname EXAq#1\endcsname}
+
+\newcommand{\Ladv}[1]{%
+{\vspace{-1mm}\TailleJury\bfseries{\csname ADVp#1\endcsname} \textsc{\csname ADVn#1\endcsname}\newline}%
+{\vspace{-1mm}\small\csname ADVq#1\endcsname}\authorspacing\mbox{\textit{\small\csname ADVt#1\endcsname}}\vspace{1mm}%
+}
+\newcommand{\Lrap}[1]{%
+{\vspace{-1mm}\TailleJury\bfseries{\csname RAPp#1\endcsname} \textsc{\csname RAPn#1\endcsname}\newline}
+{\vspace{-1mm}\small\csname RAPq#1\endcsname}\authorspacing\mbox{\textit{\small\csname RAPt#1\endcsname}}\vspace{1mm}%
+}
+\newcommand{\Lexa}[1]{%
+{\vspace{-1mm}\TailleJury\bfseries{\csname EXAp#1\endcsname} \textsc{\csname EXAn#1\endcsname}\newline}%
+{\vspace{-1mm}\small\csname EXAq#1\endcsname}\authorspacing\mbox{\textit{\small\csname EXAt#1\endcsname}}\vspace{1mm}%
+}
+
+\newcommand{\newAdv}[5]{%
+\expandafter\def\csname ADVp#1\endcsname{#2}%
+\expandafter\def\csname ADVn#1\endcsname{\textsc{#3}}%
+\expandafter\def\csname ADVq#1\endcsname{#4}%
+\expandafter\def\csname ADVt#1\endcsname{#5}%
+}
+
+\newcommand{\newExam}[5]{%
+\expandafter\def\csname EXAp#1\endcsname{#2}%
+\expandafter\def\csname EXAn#1\endcsname{\textsc{#3}}%
+\expandafter\def\csname EXAq#1\endcsname{#4}%
+\expandafter\def\csname EXAt#1\endcsname{#5}%
+}
+
+\newcommand{\newRap}[5]{%
+\expandafter\def\csname RAPp#1\endcsname{#2}%
+\expandafter\def\csname RAPn#1\endcsname{\textsc{#3}}%
+\expandafter\def\csname RAPq#1\endcsname{#4}%
+\expandafter\def\csname RAPt#1\endcsname{#5}%
+}
+
+\newcommand{\JURY}{
+{\vspace{-1mm}\bfseries\TailleJury\PRESp~\PRESn\vspace{-1mm}\newline}
+{\small\PRESq\authorspacing\mbox{\small\textit{Pr\'esident}}\\}
+\Lrap{i}\\
+\setcounter{III}{1}%
+\whiledo{{\value{III}<\value{nrap}}}{\stepcounter{III}\Lrap{\roman{III}}\\}%
+\setcounter{III}{0}%
+\whiledo{{\value{III}<\value{nexa}}}{\stepcounter{III}\Lexa{\roman{III}}\\}%
+\setcounter{III}{0}%
+\whiledo{{\value{III}<\value{nadv}}}{\stepcounter{III}\Ladv{\roman{III}}\\}%
+}
+
+% % committe chair
+% \newcommand{\setchair}[1]{\def\urtchair{#1, Chair}}
+% % committe co-chairs
+% \newcommand{\setchairs}[2]{%
+% \def\urtchair{#1, Co-chair \\ #2, Co-chair}}
+% % other members (separated by \\s)
+% \newcommand{\setmembers}[1]{\def\urtmembers{#1\par}}
+
+%%% typesets the TITLE page
+\newcommand{\thetitlepage}{% {%
+\thispagestyle{empty}
+\fontfamily{phv}\selectfont
+%\hspace{-0.7cm}
+\begin{minipage}{15.3cm}
+%\vspace{-10.5cm}
+\large N$^o$ d'ordre  : 1234
+\hfill
+\textbf{ANN\'EE \the\year}
+\end{minipage}
+
+%\vspace{-4.0cm}\hspace{-1cm}
+ \begin{tabular}[th!]{ccc}
+\includegraphics[height=30mm]{figures/logos/univ-rennes1-logo-bw} & \hspace{1.5cm} & \includegraphics[height=30mm]{figures/logos/ueb}
+\end{tabular}
+
+\vspace{1.5cm}
+\begin{center}
+\begin{minipage}{16cm}
+  \centering{\Large\bfseries TH\`ESE / UNIVERSIT\'E DE RENNES 1}\\ \vspace{0mm}\emph{\Large sous le sceau de lUniversit\'e' Europ\'eenne de Bretagne\\
+    \vspace {0.5cm}}
+{\Large pour le grade de}\\ \vspace{2mm}
+{\Large\bfseries  DOCTEUR DE L'UNIVERSIT\'E DE RENNES 1}\\ \vspace{0.4cm}
+\emph{\Large Mention : \urtmention}\\ \vspace{2mm}
+{\Large\bfseries  \'Ecole doctorale Matisse}\\ \vspace{0.5cm}
+{\Large pr\'esent\'ee par} \\ \vspace{3mm}
+{\Huge\bfseries \urtauthor}\\ \vspace{0.6cm}
+{\Large Pr\'epar\'ee \`a l'unit\'e de recherche \urtlaboshort\\%
+\urtlabolong\\%
+\urtcomposante\\}
+\end{minipage}
+\vspace{0.5cm}
+
+\begin{textblock}{0}(-0.5,0)
+\hrule width 17.3cm height 1pt
+\begin{tabular}{p{8cm}p{9cm}}
+\begin{minipage}[t]{8cm}
+\vspace{0.5cm}
+\baselineskip=35pt
+{\Huge\textbf{\urttitle}}
+\end{minipage}
+&
+\begin{minipage}[t]{9cm}
+\vspace{0.5cm}
+{\bfseries \TailleJury{}Th\`ese soutenue \`a \urtslieu\newline}
+{\bfseries \TailleJury{}le \urtsdate\vspace{2mm}\newline}
+{\small devant le jury compos\'e de : \vspace{2mm}}
+
+\JURY
+\end{minipage}
+\end{tabular}
+\end{textblock}
+\end{center}
+\clearpage\fontfamily{\familydefault}\selectfont
+% \thispagestyle{empty}
+% \centering
+% \fontfamily{phv}
+% Asd
+% \vspace*{-\toptafiddle}
+% Title \\ by \\ author
+% TITLE by AUTHOR
+% \vfill
+% {\SingleSpace
+% %A \urtdoctype\ Presented in Partial Fulfillment \\
+% A xxx Presenaated in Partial Fulfillment \\
+% of the Requirements for the Degree \\
+% %\urtdegree\par}
+% XXX\par}
+% \vfill
+% ARCHIBALD SMYTHE UNIVERSITY \\
+% % \urtgraddate
+% date
+% \par
+% \enlargethispage{\bottafiddle}
+% \clearpage}
+}
+
+\newcounter{nadv}
+\setcounter{nadv}{0}
+\newcounter{nrap}
+\setcounter{nrap}{0}
+\newcounter{nexa}
+\setcounter{nexa}{0}
+\newcounter{III}
+
+
+%% use the urthese chapterstyle and plain pagestyle
+\chapterstyle{ell}
+\pagestyle{plain}
+\endinput

@@ -1,44 +1,87 @@
 \documentclass[a4paper,11pt,twoside]{memoir}
 
-\usepackage{urthese}
+%\usepackage[margincomments]{urthese}
+\usepackage[]{urthese}
 
-\settitle{Intitul\'e de la th\`ese %
-Ex.: Contribution \`a la conception \`a bas co\^ut d'antennes 3D\dots}
-\setauthor{Name~Lastname}
-\setmention{Traitement du Signal}
+% \usepackage{xr}
+% \externaldocument{chapter1/chapter1}
+% \externaldocument{chapter2/chapter2}
+% \externaldocument{chapter3/chapter3}
+% \externaldocument{chapter4/chapter4}
+% \externaldocument{chapter5/chapter5}
+% \externaldocument{chapter6/chapter6}
+% \externaldocument{chapter7/chapter7}
+% \externaldocument{chapter8/chapter8}
+
+
+\settitle{Example of the title\\ for my thesis\\ and its\\ manuscript}
+\setauthor{Prenom Nom}
+\setmention{Traitement du Signal et T\'{e}l\'{e}communications}
 \setlaboshort{INSERM, U1099}
 \setlabolong{Laboratoire de Traitement du Signal et de l'Image}
 \setcomposante{UFR ISTIC: Informatique et \'Electronique}
-\setsoutenancedate{Un jour}
+\setsoutenancedate{10 d\'{e}cembre 2013}
 \setsoutenancelieu{Rennes}
+%\newAdv{uno}{dos}{tres}{cuatro}{cinco}
+\Advisor[M]{Prenom}{Nom}{Charg\'{e} de Recherche INSERM, HDR}
+\Advisor[Mme]{Prenom}{Nom}{MC \`{a} l'Universit\'{e} de Rennes 1}
+\Rapporteur[Mme]{Prenom}{Nom}{PU \`{a} l'Universit\'{e} de Technologie Compi\`{e}gne}
+\Rapporteur[Mme]{Prenom}{Nom}{Lecturer \`{a} University College London}
+\President[M]{Prenom}{Nom}{Directeur de Recherche chez x}
+\Examinateur[M]{Prenom}{Nom}{PH/PU \`{a} l'Universit\'{e} de Rennes 1}
 
 \input{preamble}
-
 
 \addbibresource{biblio.bib}
 
 \OnehalfSpacing
+%\setSingleSpace{1.25}
 
 \begin{document}
 \selectlanguage{french}
-\frontmatter
 \thetitlepage
+\frontmatter
 \selectlanguage{english}
+\pagestyle{urthesetoc}
+\input{abstract}
+\cleardoublepage
+\selectlanguage{french}
+\input{resume-long}
+\cleardoublepage
 \tableofcontents
-%\include{cover/cover}
+
+% \listoffigures
+% \listoftables
 
 \selectlanguage{english}
 \mainmatter
-\pagestyle{urthese}
-\include{chapter1/chapter1}
-\include{chapter2/chapter2}
-\include{chapter3/chapter3}
-\include{chapter4/chapter4}
-\include{chapter5/chapter5}
-% \include{chapter6/chapter6}
-% \include{chapter7/chapter7}
-% \include{chapter8/chapter8}
-% \include{chapter9/chapter9}
 
+\pagestyle{urthese}
+% TODO: Remove the \setcounter{chapter}{x} in the final version!
+% \setcounter{chapter}{0} 
+
+\input{chapter1/chapter1} % Introduction
+% % \setcounter{chapter}{1} 
+\input{chapter2/chapter2} % chap 2
+% % \setcounter{chapter}{2} 
+\input{chapter3/chapter3} % chap 3
+% % \setcounter{chapter}{3} 
+\input{chapter4/chapter4} % chap 4
+% % \setcounter{chapter}{4} 
+\input{chapter5/chapter5} % Conclusion
+% % \setcounter{chapter}{5} 
+
+\cleardoublepage
+\appendix
+\renewcommand{\chaptername}{Appendix}
+\input{extras/publications}
+\input{chapter2/appendix-c2}
+
+\renewcommand{\chaptername}{}
+\listoffigures
+\listoftables
+
+\cleardoublepage
+\approvalpage
 
 \end{document}

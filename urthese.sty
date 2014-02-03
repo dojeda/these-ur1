@@ -17,13 +17,51 @@
 
 \RequirePackage[bibstyle=authoryear,
                 citestyle=authoryear-comp,
+                autocite=inline,
+                maxnames=99,
                 maxcitenames=1,
                 hyperref=true,
                 natbib=true,
+                % firstinits=true,
+                url=false,
                 refsection=chapter]{biblatex}
 \RequirePackage{hyperref}
 \RequirePackage{graphicx}
 \RequirePackage{textpos}
+\RequirePackage{tikz}
+\RequirePackage{eso-pic}
+%\RequirePackage{showframe}
+
+%% Global indentation option
+\newif\if@margincomments\@margincommentsfalse
+\DeclareOption{margincomments}{
+  \@margincommentstrue
+}
+\ProcessOptions\relax
+
+% Bibliography style
+% prints author names as small caps
+\renewcommand{\mkbibnamefirst}[1]{\textsc{#1}}
+\renewcommand{\mkbibnamelast}[1]{\textsc{#1}}
+\renewcommand{\mkbibnameprefix}[1]{\textsc{#1}}
+\renewcommand{\mkbibnameaffix}[1]{\textsc{#1}}
+\let\cite\autocite
+
+\if@margincomments
+\newcommand{\margincomment}[1]{\hspace{0pt}\marginpar{\renewcommand{\baselinestretch}{0.5}\footnotesize\selectfont#1\par}\ignorespaces}
+\else
+\newcommand{\margincomment}[1]{\ignorespaces}
+\fi
+
+% \AddToShipoutPicture{%
+%     \begin{tikzpicture}[overlay,remember picture]
+%         % \draw[thick,red]
+%         %       (current page.north east)
+%         %       rectangle (current page.south west);
+%         \draw[blue!30!white,thin] 
+%              (current page.south west) grid[xstep=1cm,ystep=1cm] (\paperwidth,\paperheight);
+%     \end{tikzpicture}%
+% }
 
 \defbibheading{subbibintoc}[\refname]{%
   \addsec{#1}%
@@ -34,55 +72,69 @@
 %%% Packages that should be erased in the final version
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 \usepackage{lipsum}
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+% widows and orphans
+\widowpenalty=900
+\clubpenalty=900
+
+% spacing between lines
+% \SingleSpacing \setSingleSpace{1}
 
 % Margin configuration (left and right)
-\setlrmarginsandblock{2.5cm}{2.5cm}{*}
+%\setlrmarginsandblock{2.5cm}{2.5cm}{*}
 %\checkandfixthelayout
 
 % top/bottom margins
   %% for main body, bottom of text at 1in, footer below
   %% top of header at 1in, first text line double spaced
   %% below base of header
-\newlength{\linespace}
-\setlength{\linespace}{\baselineskip} % current equivalent of \onelineskip
-\setlength{\headheight}{\onelineskip}
-\setlength{\headsep}{\linespace}
-\addtolength{\headsep}{-\topskip}
-\setlength{\uppermargin}{2.5cm}
-\addtolength{\uppermargin}{\headheight}
-\addtolength{\uppermargin}{\headsep}
-%% and for the bottom
-\setlength{\lowermargin}{2cm}
-\setlength{\textheight}{\paperheight}
-\addtolength{\textheight}{-\uppermargin}
-\addtolength{\textheight}{-\lowermargin}
-%% footnote settings
-\setlength{\footskip}{\onelineskip}
-\setlength{\footnotesep}{\onelineskip}
+% \newlength{\linespace}
+% \setlength{\linespace}{\baselineskip} % current equivalent of \onelineskip
+% \setlength{\headheight}{\onelineskip}
+% \setlength{\headsep}{\linespace}
+% \addtolength{\headsep}{-\topskip}
+% \setlength{\uppermargin}{1cm}
+% \addtolength{\uppermargin}{\headheight}
+% \addtolength{\uppermargin}{\headsep}
+% %% and for the bottom
+% \setlength{\lowermargin}{2cm}
+% \setlength{\textheight}{\paperheight}
+% \addtolength{\textheight}{-\uppermargin}
+% \addtolength{\textheight}{-\lowermargin}
+% %% footnote settings
+% \setlength{\footskip}{\onelineskip}
+% \setlength{\footnotesep}{\onelineskip}
+% \checkandfixthelayout[nearest]
 
-\checkandfixthelayout[nearest]
+\setstocksize{297mm}{210mm}
+\if@margincomments
+\setlrmarginsandblock{3cm}{5cm}{*} % with margin notes
+\else
+\setlrmarginsandblock{3cm}{2cm}{*} % without margin notes
+\fi
+\setulmarginsandblock{3.5cm}{3cm}{*}
+\setheaderspaces{*}{1cm}{*}
+\setmarginnotes{.5cm}{4cm}{.25cm}
+\checkandfixthelayout
 
 %%%% pagestyles
 %% the main text
-\makepagestyle{urthese}
-\makeevenhead{urthese}{\thepage}{}{}
-\makeoddhead{urthese}{}{}{\thepage}
-%% for continuation pages of the ToC, LoF, LoT
-\makepagestyle{toc}
-\makeevenfoot{toc}{}{\thepage}{}
-\makeoddfoot{toc}{}{\thepage}{}
-\makeevenhead{toc}{Chapter}{}{Page}
-\makeoddhead{toc}{Chapter}{}{Page}
-\makepagestyle{lof}
-\makeevenfoot{lof}{}{\thepage}{}
-\makeoddfoot{lof}{}{\thepage}{}
-\makeevenhead{lof}{Figure}{}{Page}
-\makeoddhead{lof}{Figure}{}{Page}
-\makepagestyle{lot}
-\makeevenfoot{lot}{}{\thepage}{}
-\makeoddfoot{lot}{}{\thepage}{}
-\makeevenhead{lot}{Table}{}{Page}
-\makeoddhead{lot}{Table}{}{Page}
+%\makepagestyle{urthese}
+\copypagestyle{urthese}{ruled}
+\copypagestyle{urthesetoc}{urthese}
+\makeevenhead{urthese}{\thepage}{}{\scshape \chaptername{}~\leftmark}
+\makeoddhead{urthese}{\rightmark}{}{\thepage}
+\makeevenfoot{urthese}{}{}{}
+\makeoddfoot{urthese}{}{}{}
+\makeoddfoot{plain}{}{}{}
+\makeevenhead{urthesetoc}{\thepage}{}{\scshape \leftmark}
+\makeoddfoot{urthesetoc}{}{}{}
+\makeevenfoot{urthesetoc}{}{}{}
+
+%% Depth of numbering
+\setsecnumdepth{paragraph} % Enumerate until subsubsections
+\settocdepth{paragraph}       % Include in ToC until subsubsection
 
 %% the fiddle lengths (..ta.. for title/approval page, others for prelims)
 % \newlength{\toptafiddle} \setlength{\toptafiddle}{2\linespace}
@@ -90,24 +142,23 @@
 % \newlength{\topfiddle} \setlength{\topfiddle}{\toptafiddle}
 % \newlength{\botfiddle} \setlength{\botfiddle}{\onelineskip}
 
-% %% LoF
+%% LoF
 % \renewcommand{\listfigurename}{LIST OF FIGURES}
-% \addtodef{\listoffigures}{\clearpage\pagestyle{lof}}{}
-
+\addtodef{\listoffigures}{\cleardoublepage\pagestyle{urthesetoc}}{}
 % \renewcommand*{\lofheadstart}{\vspace*{-\topfiddle}}
 % \renewcommand*{\afterloftitle}{\thispagestyle{plain}%
 % \par\nobreak {\normalfont Figure \hfill Page}\par\nobreak}
 
-% %%% The LoT
+%%% The LoT
 % \renewcommand{\listtablename}{LIST OF TABLES}
-% \addtodef{\listoftables}{\clearpage\pagestyle{lot}}{}
+\addtodef{\listoftables}{\cleardoublepage\pagestyle{urthesetoc}}{}
 % \renewcommand*{\lotheadstart}{\vspace*{-\topfiddle}}
 % \renewcommand*{\afterlottitle}{\thispagestyle{plain}%
 % \par\nobreak {\normalfont Table \hfill Page}\par\nobreak}
 
-% %%%% Do the ToC
-% \renewcommand{\contentsname}{TABLE OF CONTENTS}
-% \addtodef{\tableofcontents}{\clearpage\pagestyle{toc}}{}
+%%%% The ToC
+\renewcommand{\contentsname}{Table of contents}
+\addtodef{\tableofcontents}{\cleardoublepage\pagestyle{urthesetoc}}{}
 % \renewcommand*{\tocheadstart}{\vspace*{-\topfiddle}}
 % \renewcommand*{\aftertoctitle}{\thispagestyle{plain}%
 % \par\nobreak \mbox{}\hfill{\normalfont Page}\par\nobreak}
@@ -123,6 +174,11 @@
 % \renewcommand*{\chaptitlefont}{\normalfont\centering}
 % \renewcommand*{\printchapternonum}{}}
 % \aliaspagestyle{chapter}{empty}
+
+%% Style for floats
+\captionnamefont{\scshape} % The "Figure XXX", "Table XXX" part
+\captiontitlefont{\small}  % The caption text
+\captiondelim{-- }         % The separation between "Figure X.X" and the caption
 
 %%%% for the title page and approval page.
 % your title
@@ -140,12 +196,12 @@
 % Lieu
 \newcommand{\setsoutenancelieu}[1]{\def\urtslieu{#1}}
 % Jury
-\newcommand{\PRESp}{P.}
-\newcommand{\PRESn}{\textsc{Dugland}}
-\newcommand{\PRESq}{gargamel}
-\newcommand{\ADVp}{S.}
-\newcommand{\ADVn}{\textsc{Dublair}}
-\newcommand{\ADVq}{grand schtroumpf}
+\newcommand{\PRESp}{Barack}
+\newcommand{\PRESn}{\textsc{Obama}}
+\newcommand{\PRESq}{Pr\'{e}sident}
+\newcommand{\ADVp}{Prenom}
+\newcommand{\ADVn}{\textsc{Nom}}
+\newcommand{\ADVq}{Fonction}
 \newcommand{\RAPpi}{X.}
 \newcommand{\RAPni}{\textsc{Dupont}}
 \newcommand{\RAPqi}{schtroumpf farceur}
@@ -156,6 +212,7 @@
 \newcommand{\EXAti}{\'Examinateur}
 \newcommand{\Mpres}{M}
 \newcommand{\TPres}{Président}
+% \newcommand{\TPres}{Examinateur}
 \newcommand{\Mrap}{M}
 \newcommand{\TRap}{Rapporteur}
 \newcommand{\Mexa}{MM}
@@ -202,15 +259,55 @@
 }
 
 \newcommand{\JURY}{
-{\vspace{-1mm}\bfseries\TailleJury\PRESp~\PRESn\vspace{-1mm}\newline}
-{\small\PRESq\authorspacing\mbox{\small\textit{Pr\'esident}}\\}
-\Lrap{i}\\
-\setcounter{III}{1}%
+% {\vspace{-1mm}\bfseries\TailleJury\PRESp~\PRESn\vspace{-1mm}\newline}
+% {\small\PRESq\authorspacing\mbox{\small\textit{Pr\'esident}}\\}
+% \Lrap{i}\\
+\setcounter{III}{0}%
 \whiledo{{\value{III}<\value{nrap}}}{\stepcounter{III}\Lrap{\roman{III}}\\}%
+% {\vspace{-1mm}\bfseries\TailleJury\PRESp~\PRESn\vspace{-1mm}\newline}%
+% {\small\PRESq\authorspacing\mbox{\small\textit{Pr\'esident}}\\}%
+{\vspace{-1mm}\TailleJury\bfseries\PRESp~\PRESn}\newline%
+{\vspace{-1mm}\small\PRESq\authorspacing\mbox{\small\textit{Examinateur}}}\vspace{1mm}\\%
+% \Lrap{i}\\
 \setcounter{III}{0}%
 \whiledo{{\value{III}<\value{nexa}}}{\stepcounter{III}\Lexa{\roman{III}}\\}%
 \setcounter{III}{0}%
 \whiledo{{\value{III}<\value{nadv}}}{\stepcounter{III}\Ladv{\roman{III}}\\}%
+}
+
+% Prenom Nom Qualite du president du jury
+\newcommand{\President}[4][M]{%
+\renewcommand{\Mpres}{#1}%
+\ifthenelse{\equal{#1}{Mme}}{\renewcommand{\TPres}{Présidente}}{}%
+\renewcommand{\PRESp}{#2}%
+\renewcommand{\PRESn}{\textsc{#3}}%
+\renewcommand{\PRESq}{#4}%
+}
+
+\newcommand{\Advisor}[4][M]{%
+\stepcounter{nadv}%
+\ifthenelse{\equal{\value{nadv}}{1}}{
+\ifthenelse{\equal{#1}{Mme}}{\newAdv{\roman{nadv}}{#2}{#3}{#4}{Directrice de th\`{e}se}}{\newAdv{\roman{nadv}}{#2}{#3}{#4}{Directeur de th\`{e}se}}%
+}{
+\ifthenelse{\equal{#1}{Mme}}{\newAdv{\roman{nadv}}{#2}{#3}{#4}{Co-directrice de th\`{e}se}}{\newAdv{\roman{nadv}}{#2}{#3}{#4}{Co-directeur de th\`{e}se}}%
+}
+}
+
+% [Civilé] Prenom Nom Qualite d'un rapporteur
+\newcommand{\Rapporteur}[4][M]{%
+\stepcounter{nrap}%
+\ifthenelse{\equal{#1}{Mme}}{\newRap{\roman{nrap}}{#2}{#3}{#4}{Rapporteur}}{\newRap{\roman{nrap}}{#2}{#3}{#4}{Rapporteur}}%
+}
+
+% [Civilé] Prenom Nom Qualite d'un examinateur
+\newcommand{\Examinateur}[4][M]{%
+\stepcounter{nexa}%
+\ifthenelse{\equal{#1}{Mme}}{\newExam{\roman{nexa}}{#2}{#3}{#4}{Examinatrice}}{\newExam{\roman{nexa}}{#2}{#3}{#4}{Examinateur}}%
+}
+
+\newcommand{\NOORDRE}{000}
+\newcommand{\ordre}[1]{%
+\renewcommand{\NOORDRE}{#1}%
 }
 
 % % committe chair
@@ -226,22 +323,22 @@
 \thispagestyle{empty}
 \fontfamily{phv}\selectfont
 %\hspace{-0.7cm}
-\begin{minipage}{15.3cm}
-%\vspace{-10.5cm}
-\large N$^o$ d'ordre  : 1234
+\vspace*{-2.4cm}\hspace{-1.3cm}\begin{minipage}{1.0\linewidth}
+\phantom{\large N\textsuperscript{o} d'ordre : XXXXX}
 \hfill
 \textbf{ANN\'EE \the\year}
-\end{minipage}
-
+\end{minipage} % The following empty line is important
+ 
+\vspace{1cm}
 %\vspace{-4.0cm}\hspace{-1cm}
- \begin{tabular}[th!]{ccc}
-\includegraphics[height=30mm]{figures/logos/univ-rennes1-logo-bw} & \hspace{1.5cm} & \includegraphics[height=30mm]{figures/logos/ueb}
-\end{tabular}
-
-\vspace{1.5cm}
+% \begin{tabular}[th!]{ccc}
+% \hspace{-1.4cm}\includegraphics[height=30mm]{figures/logos/univ-rennes1-logo-bw} & \hfill & \includegraphics[height=30mm]{figures/logos/ueb}
+% \end{tabular}
+\hspace{-1.3cm}\includegraphics[height=30mm]{figures/logos/univ-rennes1-logo-bw}\hfill\includegraphics[height=30mm]{figures/logos/ueb}
+\vspace{1cm}
 \begin{center}
 \begin{minipage}{16cm}
-  \centering{\Large\bfseries TH\`ESE / UNIVERSIT\'E DE RENNES 1}\\ \vspace{0mm}\emph{\Large sous le sceau de lUniversit\'e' Europ\'eenne de Bretagne\\
+  \centering{\Large\bfseries TH\`ESE / UNIVERSIT\'E DE RENNES 1}\\ \vspace{0mm}\emph{\Large sous le sceau de l'Universit\'e Europ\'eenne de Bretagne\\
     \vspace {0.5cm}}
 {\Large pour le grade de}\\ \vspace{2mm}
 {\Large\bfseries  DOCTEUR DE L'UNIVERSIT\'E DE RENNES 1}\\ \vspace{0.4cm}
@@ -256,18 +353,17 @@
 \vspace{0.5cm}
 
 \begin{textblock}{0}(-0.5,0)
-\hrule width 17.3cm height 1pt
-\begin{tabular}{p{8cm}p{9cm}}
-\begin{minipage}[t]{8cm}
+\hrule width 16.2cm height 1pt
+\begin{tabular}{p{7cm}cp{10cm}}
+\begin{minipage}[t]{7cm}
 \vspace{0.5cm}
 \baselineskip=35pt
 {\Huge\textbf{\urttitle}}
-\end{minipage}
-&
-\begin{minipage}[t]{9cm}
+\end{minipage}&&
+\begin{minipage}[t]{10cm}
 \vspace{0.5cm}
-{\bfseries \TailleJury{}Th\`ese soutenue \`a \urtslieu\newline}
-{\bfseries \TailleJury{}le \urtsdate\vspace{2mm}\newline}
+{\bfseries \TailleJury{}Th\`ese \`a soutenir \`a \urtslieu\newline}
+{\bfseries \TailleJury{}le \urtsdate\newline}
 {\small devant le jury compos\'e de : \vspace{2mm}}
 
 \JURY
@@ -299,6 +395,48 @@
 % \clearpage}
 }
 
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+% Approval page
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\newcommand{\approvalpage}{{%
+    \thispagestyle{empty}
+    \centering
+    \parbox[t]{5cm}{\centering%
+      VU:\\[1.5cm]
+      \noindent\hrulefill\\
+      \textbf{Le Directeur de Th\`{e}se}\\
+      \textsc{Prenom NOM}%
+    }%
+    \hfill%
+    \parbox[t]{5cm}{\centering%
+      VU:\\[1.5cm]
+      \noindent\hrulefill\\
+      \textbf{Le Responsable de l'\'{e}cole doctorale}}%
+    \vfill
+    \parbox[c]{8cm}{\centering\bfseries\large%
+      {\raggedright
+      VU pour autorisation de soutenance\\
+      Rennes, le\\[1.5cm]
+      Le Pr\'{e}sident de l'Universit\'{e} de Rennes 1\\[1.5cm]}
+      Guy CATHELINEAU
+    }%
+    \vfill
+    \parbox[c]{1.0\linewidth}{\centering\bfseries\large%
+      VU apr\`{e}s soutenance pour autorisation de publication:\\[1.5cm]
+      \noindent\rule{5cm}{.1pt}\\
+      Le Pr\'{e}sident de Jury%\\
+      %\textsc{Michel ROCHETTE}
+    }
+    \clearpage}}
+
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+% Footnote configuration
+\renewcommand*{\footfudgefiddle}{70}
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+
 \newcounter{nadv}
 \setcounter{nadv}{0}
 \newcounter{nrap}
@@ -307,8 +445,53 @@
 \setcounter{nexa}{0}
 \newcounter{III}
 
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+% Chapter style
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\makeatletter
+\newlength{\numberheight}
+\setlength{\numberheight}{\beforechapskip}
+\makechapterstyle{myveelo}{%
+   \setlength{\afterchapskip}{40pt}
+  \renewcommand*{\chapterheadstart}{\vspace*{40pt}}
+  \renewcommand*{\afterchapternum}{\par\nobreak\vskip 25pt}
+   \renewcommand*{\chapnamefont}{\normalfont\LARGE\flushright}
+   \renewcommand*{\chapnumfont}{\normalfont\HUGE}
+   \renewcommand*{\chaptitlefont}{\normalfont\HUGE\bfseries\flushright}
+   \renewcommand*{\printchaptername}{%
+     \chapnamefont\MakeUppercase{\@chapapp}~\hspace*{\midchapskip}}
+   \renewcommand*{\chapternamenum}{}
+  \setlength{\beforechapskip}{18mm}%  \numberheight
+  \setlength{\midchapskip}{\paperwidth}% \barlength
+  \addtolength{\midchapskip}{-\textwidth}
+  \addtolength{\midchapskip}{-\spinemargin}
+  \addtolength{\midchapskip}{-2.5em}
+   \renewcommand*{\printchapternum}{%
+     \makebox[0pt][l]{\hspace{-\midchapskip}%
+       %\hspace{.8em}%
+       \resizebox{!}{\numberheight}{\chapnumfont \thechapter}%
+       \hspace{.8em}%
+       \rule{\midchapskip}{\beforechapskip}%
+     }%
+   }%
+   \makeoddfoot{plain}{}{\thepage}{}}
+\makeatother
 
 %% use the urthese chapterstyle and plain pagestyle
-\chapterstyle{ell}
+%\chapterstyle{ell}
+%\chapterstyle{bianchi}
+%\chapterstyle{madsen}
+%\chapterstyle{veelo} % Only interesting if there is space for a margin paragraph
+\makeatletter
+\if@margincomments
+\chapterstyle{veelo} % Veelo fixed thanks to http://tex.stackexchange.com/questions/69656/right-align-chapter-number-to-the-chapter-name-when-using-memoir-with-veelo-style
+\else
+\chapterstyle{myveelo}
+\fi
+\makeatother
+
 \pagestyle{plain}
+
+
+
 \endinput
